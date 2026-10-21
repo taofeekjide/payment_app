@@ -1,18 +1,19 @@
 {
   "compilerOptions": {
-    "target": "ES2022",
-    "module": "NodeNext",
-    "moduleResolution": "NodeNext",
+    "target": "ES2022",                       // Specify ECMAScript target version
+    "module": "NodeNext",                     // Specify module code generation  
+    "moduleResolution": "NodeNext",           //specify how typescript looks for a file
     "types": ["node"],
-    "rootDir": "./src",
-    "outDir": "./dist",
+    "rootDir": "./src",                       //specifies the root directory of the input files
+    "outDir": "./dist",                       //specifies the root directory of the output files
     "sourceMap": true,
-    "strict": true,
+    "strict": true,                           //ensures strict type checking
     "noUncheckedIndexedAccess": true,
     "exactOptionalPropertyTypes": true,
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "skipLibCheck": true,
-    "noEmitOnError": true
+    "noEmitOnError": true,                      //ensures the file is not compiled if anny error is present
+    "removeComments": true                      //removes comments from the output files
   }
 }
