@@ -1,28 +1,28 @@
+
 import "dotenv/config";
 import express from "express";
-import { pool } from "./db.js";
+import cors from "cors";
+
+import authRouter from "./routes/auth.js";
 
 const app = express();
-const PORT = 3000;
+const PORT = Number(process.env.PORT) || 3000;
 
-app.get("/", (req, res) => {
-  res.send("Backend is working");
+app.use(
+  cors({
+    origin: "http://localhost:5173",
+    credentials: true,
+  }),
+);
+
+app.use(express.json());
+
+app.get("/", (_req, res) => {
+  res.send("Payment app backend is running!");
 });
 
-app.get("/health/db", async (req, res) => {
-  try {
-    res.json({
-      status: "ok",
-      database: "connected",
-    });
-  } catch (error) {
-    res.status(500).json({
-      status: "error",
-      database: "disconnected",
-    });
-  }
-});
+app.use("/api/auth", authRouter);
 
 app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
+  console.log(`Server is running at http://localhost:${PORT}`);
 });
