@@ -4,6 +4,7 @@ import cors from "cors";
 import session from "express-session";
 import connectPgSimple from "connect-pg-simple";
 import walletRouter from "./routes/wallet.js";
+import transferRouter from "./routes/transfer.js";
 
 import { pool } from "./db.js";
 import authRouter from "./routes/auth.js";
@@ -48,6 +49,7 @@ app.use(
 
 app.use("/api/auth", authRouter);
 app.use("/api/wallet", walletRouter);
+app.use("/api/wallet/transfers", transferRouter);
 
 app.listen(PORT, () => {
   console.log(`Server is running at http://localhost:${PORT}`);
