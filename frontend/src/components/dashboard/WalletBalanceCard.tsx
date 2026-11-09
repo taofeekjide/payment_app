@@ -1,11 +1,41 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Eye, EyeOff, Plus, ArrowUpRight, Wallet } from "lucide-react";
+
+import { walletService } from "../../services/walletService";
+import type { Wallet as WalletType } from "../../types/wallet";
+
+function formatKobo(balanceKobo: string) {
+  const amount = BigInt(balanceKobo);
+  const naira = amount / 100n;
+  const kobo = (amount % 100n).toString().padStart(2, "0");
+
+  const formattedNaira = new Intl.NumberFormat("en-NG").format(naira);
+
+  return `₦${formattedNaira}.${kobo}`;
+}
 
 export function WalletBalanceCard() {
   const [balanceVisible, setBalanceVisible] = useState(true);
+  const [wallet, setWallet] = useState<WalletType | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState("");
 
-  // Temporary display value. We'll replace this with the API balance.
-  const balance = "0.00";
+  useEffect(() => {
+    async function loadWallet() {
+      try {
+        const data = await walletService.getWallet();
+        setWallet(data);
+      } catch (error) {
+        setError(
+          error instanceof Error ? error.message : "Unable to load wallet.",
+        );
+      } finally {
+        setIsLoading(false);
+      }
+    }
+
+    loadWallet();
+  }, []);
 
   return (
     <section className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-[#102D3F] via-[#123C45] to-[#087B66] p-6 text-white shadow-xl shadow-emerald-950/10 sm:p-8">
@@ -21,7 +51,13 @@ export function WalletBalanceCard() {
 
           <div className="mt-5 flex items-center gap-3">
             <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
-              {balanceVisible ? `₦${balance}` : "₦ ••••••"}
+              {isLoading
+                ? "Loading..."
+                : error
+                  ? "Unavailable"
+                  : balanceVisible
+                    ? formatKobo(wallet?.balanceKobo ?? "0")
+                    : "₦ ••••••"}
             </h2>
 
             <button
@@ -34,7 +70,7 @@ export function WalletBalanceCard() {
           </div>
 
           <p className="mt-3 text-xs text-emerald-100/60">
-            Your available wallet balance
+            {error || "Your available wallet balance"}
           </p>
         </div>
 
